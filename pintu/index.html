@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html class="noIE" lang="en-US">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>Halo nemo丨九宫格拼图游戏</title>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale = 1.0, maximum-scale=1.0, user-scalable=no">
+		<link rel="stylesheet" href="assets/css/style.css" media="screen">
+		<link rel="SHORTCUT ICON" href="assets/images/loding-pic.png">
+	</head>
+	<body>
+		<section>
+			<h1>九宫格拼图游戏</h1>
+			<div class="gui" data-skin="1">
+				<img src="assets/images/skin1/pic1.png">
+				<img src="assets/images/skin1/pic2.png">
+				<img src="assets/images/skin1/pic3.png">
+				<img src="assets/images/skin1/pic4.png">
+				<img src="assets/images/skin1/pic5.png">
+				<img src="assets/images/skin1/pic6.png">
+				<img src="assets/images/skin1/pic7.png">
+				<img src="assets/images/skin1/pic8.png">
+				<img src="assets/images/skin1/pic9.png" data-src="assets/images/skin1/pic.png" class="space">
+				
+				</div>
+			<div class="button">
+				<button class="start">游戏开始</button>
+				<button class="change">换组皮肤</button>
+				<button class="explain">游戏提示</button>
+			</div>
+			<!-- <div class="top">
+				<h3>排行榜</h3>
+				<p>第一名：巴拉巴拉巴拉多少步</p>
+				<p>第一名：巴拉巴拉巴拉多少步</p>
+				<p>第一名：巴拉巴拉巴拉多少步</p>
+				<p>第一名：巴拉巴拉巴拉多少步</p>
+			</div> -->
+		</section>
+		<div class="dialog">
+			<div class="bg"></div>
+			<div class="content">
+				<h3>游戏说明<span class="close">X</span></h3>
+				<img src="assets/images/skin1/tishi.png">
+				<p>点击游戏开始或点击完整图片开始游戏，然后点击空白格附近的图块，将其拼凑整齐即可通关。</p>
+			</div>
+		</div>
+		<script src="assets/js/jquery.min.js"></script>
+		<script>
+			$(function(){
+				// 游戏初始化
+				var step = 0;
+				function gameDeploy(){
+					var le = $('.gui img').length,
+						viewWidth = $('section').width(),
+						itemWidth = parseInt(viewWidth / 3),
+						top = 0,
+						left = 0,
+						max = 3 ,
+						m = 1 ;
+					//游戏组件定位
+					$('.gui').width(viewWidth);
+					$('.gui').height(viewWidth);
+					$('.gui img').css('position','absolute');
+					//瀑布流定位游戏组件
+					for (var i = 0; i < le; i++) {
+						// left
+						$('.gui img').eq(i).css('left',left).data('left',left);
+						left = left + itemWidth; 
+						if ( (i+1) % max == 0) {
+							left = 0;
+						};
+						// top
+						if ( (i+1) <= max ){
+							$('.gui img').eq(i).css('top',top).data('top',top);
+						}else{
+							max  = max + max ;
+							top = top + itemWidth;
+							$('.gui img').eq(i).css('top',top).data('top',top);
+						};
+
+					};
+				};
+				gameDeploy();
+				//游戏逻辑
+				// 游戏动作
+				function gameEvent(){
+					step = 0;
+					$('.gui img').bind('click',function(){
+						var space = $(this).hasClass('space');
+						if (space) {
+							return false;
+						};
+						var spaceLeft = parseInt($('.space').css('left')),
+							spaceTop = parseInt($('.space').css('top')),
+							thisLeft = parseInt($(this).css('left')),
+							thisTop = parseInt($(this).css('top')),
+							judgeLeft = thisLeft - spaceLeft,
+							judgeTop = thisTop - spaceTop,
+							viewWidth = $('section').width(),
+							itemWidth = parseInt(viewWidth / 3);
+						if( judgeLeft < 0){
+							judgeLeft = judgeLeft.toString();
+							judgeLeft = judgeLeft.substr(1,judgeLeft.length);
+							judgeLeft = parseInt(judgeLeft);
+						};
+						if( judgeTop < 0){
+							judgeTop = judgeTop.toString();
+							judgeTop = judgeTop.substr(1,judgeTop.length);
+							judgeTop = parseInt(judgeTop);
+						};
+						if (judgeLeft != itemWidth && judgeTop != itemWidth) {
+							return false;
+						};
+						if(judgeLeft == 0 || judgeTop == 0 ){
+							if(!$('.gui img').is(":animated")){
+								$(this).animate({'left':spaceLeft,'top':spaceTop},100);
+								$('.space').animate({'left':thisLeft,'top':thisTop},100,function(){
+									gameSuss();
+								});
+								step++;
+							}
+						};	
+					});
+				}		
+				// 判断游戏是否胜利
+				function gameSuss(){
+					var le = $('.gui img').length;
+					for (var i = 0 ; i < le ; i ++  ) {
+						var dataTop = parseInt($('.gui img').eq(i).data('top')),
+							dataLeft = parseInt($('.gui img').eq(i).data('left')),
+							cssTop = parseInt($('.gui img').eq(i).css('top')),
+							cssLeft = parseInt($('.gui img').eq(i).css('left'));
+							// console.log(i+':'+dataTop+','+dataLeft+'-'+cssTop+','+cssLeft)
+						if (dataTop != cssTop || dataLeft != cssLeft) {
+							return false;
+						};
+					};
+					var userName=alert('游戏通关！你总共用了'+step+'步');
+					$('.gui img').eq(8).attr('src',$('.gui img').eq(8).data('src'))
+				};
+				// 游戏开始 打乱游戏顺序
+				var nnn = 0;
+				function gameStart(){
+					var le = $('.gui img').length;
+					function randomsort(a, b) {  
+						return Math.random()>.5 ? -1 : 1;  
+						//用Math.random()函数生成0~1之间的随机数与0.5比较，返回-1或1  
+					}  
+					var arr = [0,1,2,3,4,5,6,7,8];  
+					var arr2 = arr.sort(randomsort);  
+					for (var i = 0 ; i < le ; i++) {
+						var od = arr2[i],
+							odLeft = $('.gui img').eq(od).data('left'),
+							odTop = $('.gui img').eq(od).data('top');
+						$('.gui img').eq(i).css({'left':odLeft,'top':odTop})
+
+					};
+				};
+					// 2 在这两个组件中随机产生一个 点击
+				// gameStart()
+				// 开始游戏
+				$('.start').click(function(){
+					gameStart();
+					gameEvent();
+				});
+				// 切换皮肤
+				$('.change').click(function(){
+					gameDeploy();
+					$('.gui img').unbind('click');
+					var skin = $('.gui').data('skin');
+					if (skin == 3) {
+						skin = 1;
+					}else{
+						skin = skin + 1;
+					};
+					$('.gui').data('skin',skin);
+					for (var i = 0; i < 9; i++) {
+						$('.gui img').eq(i).attr('src','assets/images/skin'+skin+'/pic'+(i+1)+'.png')
+					};
+					$('.gui img').eq(8).data('src','assets/images/skin'+skin+'/pic.png')
+				});
+				// 游戏提示
+				$('.explain').click(function(){
+					$('.dialog').show();
+				});
+				$('.close').click(function(){
+					$('.dialog').hide();
+				});
+				var windowWidth = $(window).width();
+				if (windowWidth >=640 ) {
+					$('.dialog .content').css({'width':'600px','left':'50%','margin-left':'-300px'})
+				};
+				$(window).resize(function(){
+					gameDeploy();
+				});
+			});
+		</script>
+	</body>
+</html>

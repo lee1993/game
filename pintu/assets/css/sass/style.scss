@@ -1,0 +1,90 @@
+/******** 初始化 ******/
+@import "compass/reset";
+@import "compass/css3";
+
+section{
+	max-width: 640px;
+	width: 100%;
+	margin: 0 auto;
+	height: 100px;
+	h1{
+		text-align: center;
+		line-height: 40px;
+		background: #00aaec;
+		color:#fff;
+	}
+	.gui{
+		position: relative;
+		overflow: hidden;
+	}
+	img{
+		display: block;
+		float:left;
+		width: 33%;
+		cursor: pointer;
+	}
+	.button{
+		text-align: center;
+		padding: 20px 0;
+		button{
+    		border:none;
+    		padding: 10px 20px;
+    		background: #ddd;
+    		border-radius: 6px;
+
+		}
+	}
+	.hover{
+		opacity:0.6;
+	}
+}
+.dialog{
+	display: none;
+	position: fixed;
+	top: 0;
+	left:0;
+	z-index: 1000;
+	width: 100%;
+	height: 100%;
+	.bg{
+		position: absolute;
+		top: 0;
+		left:0;
+		width: 100%;
+		height: 100%;
+		background: #000;
+		opacity:0.8;
+	}
+	.content{
+		position: absolute;
+		left:10%;
+		top: 20%;
+		width: 80%;
+		max-width: 600px;
+		height:60%;
+		background: #fff;
+		border-radius: 10px;
+		img{
+			display: block;
+			margin: 0 auto;
+			width: 80%;
+			max-width: 300px;
+		}
+		h3{
+			line-height: 40px;
+			padding: 0 10px;
+			.close{
+				float:right;
+				cursor: pointer;
+			}
+		}
+		p{
+			line-height:1.5em;
+			padding: 0 10px;
+			margin-bottom: 10px;
+			text-indent: 2em;
+		}
+	}
+}
+
+
